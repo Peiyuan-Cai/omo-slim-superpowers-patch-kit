@@ -1,0 +1,34 @@
+name: V2 portable installer
+
+on:
+  push:
+    branches: [main, feat/opencode-v2-compat]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installer:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: omo-slim-superpowers-patch-kit
+      - uses: actions/checkout@v4
+        with:
+          repository: Peiyuan-Cai/oh-my-opencode-slim
+          ref: feat/opencode-v2-compat
+          path: oh-my-opencode-slim
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.1
+      - name: Install locked OMO helper dependencies
+        working-directory: oh-my-opencode-slim
+        run: bun install --frozen-lockfile --ignore-scripts
+      - name: Test safe installer and bridge policy
+        working-directory: omo-slim-superpowers-patch-kit
+        run: |
+          bun test tests/install-v2.test.ts
+          node tests/prompt-bridge-contract.mjs

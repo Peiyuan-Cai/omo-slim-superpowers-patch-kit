@@ -1,5 +1,10 @@
 # Upstream notice
 
+The V2 install uses the complete
+[Peiyuan-Cai OMO1 fork](https://github.com/Peiyuan-Cai/oh-my-opencode-slim), with
+bridge and V2 adapter already applied. This kit is its installer/asset source.
+The patch-based basis below is V1 provenance, not an extra V2 installation step.
+
 This is a third-party patch kit that redistributes selected modified source
 snapshots and patch files for `oh-my-opencode-slim`.
 

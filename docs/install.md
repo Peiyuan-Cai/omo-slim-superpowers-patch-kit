@@ -1,5 +1,9 @@
 # Install
 
+> Historical V1 route only. OpenCode V2 users should use
+> [install-v2.md](install-v2.md). Do not reapply the old patches to the already
+> patched Peiyuan-Cai OMO fork.
+
 ## Supported setup
 
 Use a direct local Superpowers Lite development checkout as the runtime source.

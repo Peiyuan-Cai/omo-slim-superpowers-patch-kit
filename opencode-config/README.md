@@ -1,4 +1,7 @@
-> **Note**: This file is a snapshot-style reference for the optional best-of-N + fast-lane setup. It documents the maintainer's specific config and is **not an installation target**. Use it as a reference, then adapt model assignments to your provider catalog.
+> **V2:** `scripts/install-v2.ts` uses the agents/prompts/skills below as source
+> assets and converts legacy agent fields. See
+> [`../docs/install-v2.md`](../docs/install-v2.md). The remaining prose describes
+> the historical V1 setup, not automatic V2 model/provider settings.
 >
 > Installation steps are in [`../docs/install.md`](../docs/install.md).
 
@@ -50,6 +53,10 @@ Fast-lane utility agents:
 - `orchestrator` is Anthropic-primary and may automatically pivot on retry.
 - `orchestrator-beta` is the only automatic pivot target and the only fallback-enforcing root identity for Claude child tasks.
 - `orchestrator-delta` is a manual GPT root. It inherits root operator posture and reserved-skill access, but it does not force child fallback.
+
+On V2, the three primary profiles remain, but automatic abort/switch/replay
+fallback is disabled. Native host selection and user-assigned models take
+precedence; the generator installs no private provider names.
 
 Reserved orchestrator-only skills are `best-of-n-with-judge` and `update-memory`. Only `orchestrator`, `orchestrator-beta`, and `orchestrator-delta` may invoke them.
 

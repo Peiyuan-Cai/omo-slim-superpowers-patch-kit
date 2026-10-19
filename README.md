@@ -1,71 +1,91 @@
-# OMO Slim + Superpowers Lite Patch Kit
+# OMO1 + Superpowers Lite — three-fork installer
 
-This patch kit prepares a local `oh-my-opencode-slim` v1.1.2 checkout to use a
-direct local Superpowers Lite development checkout in OpenCode.
+Install Peiyuan-Cai's **OMO1 multi-agent architecture on OpenCode V2** from
+three source repositories. This does not upgrade to OMO2/OMO3 or require another
+maintainer's private provider. The tested host is OpenCode **2.0.32**.
 
-## Supported basis
+## Clone, build, preview, apply
 
-- OMO Slim: `v1.1.2` on the 1.x line only. OMO 2.x is unsupported.
-- Superpowers runtime: a local Superpowers Lite development checkout. It is not
-  pinned, copied into a second checkout, or replaced by a stock installation.
-- Supported Lite consumers: Claude Code, Cursor, Copilot CLI, Codex CLI/App,
-  Kimi, OpenCode, Pi, Antigravity, and Factory-compatible consumers.
-- Gemini is end-of-life and unsupported.
+Prerequisites: Git, Bun 1.3.1 or newer, and OpenCode V2. Connect your own model
+provider in OpenCode and choose a valid `provider/model` ID. Node.js 22 and
+Python 3 are used for optional test/host-smoke suites. No credentials are shipped.
 
-The active plugin order is local Lite first, then local OMO. Use the placeholders
-in `config-templates/opencode.plugin-snippet.jsonc`; do not put machine-specific
-paths in a shared configuration.
+```sh
+git clone https://github.com/Peiyuan-Cai/superpowers-lite.git
+git clone https://github.com/Peiyuan-Cai/oh-my-opencode-slim.git
+git clone https://github.com/Peiyuan-Cai/omo-slim-superpowers-patch-kit.git
 
-## Install path
+cd oh-my-opencode-slim
+bun install --frozen-lockfile --ignore-scripts
+bun run build
+cd ../omo-slim-superpowers-patch-kit
 
-1. Keep one editable local Superpowers Lite checkout and use it directly.
-2. Clone upstream `oh-my-opencode-slim`, check out `v1.1.2`, and apply:
+# Replace this placeholder with an available model from your own provider.
+bun scripts/install-v2.ts --model your-provider/your-model
+# Review the preview before allowing writes:
+bun scripts/install-v2.ts --model your-provider/your-model --apply
+```
 
-   ```text
-   patches/oh-my-opencode-slim/v1.1.2/0001-superpowers-bridge-rollup.patch
-   patches/oh-my-opencode-slim/v1.1.2/0002-auto-continue-agent-model-preservation.patch
-   ```
+The installer defaults to sibling clones. Pass `--lite`, `--omo`, or
+`--config-dir` for another layout. It defaults to a **read-only dry run**, backs
+up changed files on `--apply`, and preserves unrelated providers, MCPs,
+credentials, and explicit role models. It does not build, invoke models, restart
+services, or modify session data. Read [the full guide](docs/install-v2.md),
+including existing-config conflicts, backup, and rollback, before applying.
+Reload/restart the intended OpenCode host when convenient after installation.
 
-   Apply them in that order.
-3. Build the patched OMO checkout and merge both configuration templates without
-   overwriting unrelated settings.
-4. Copy all eight `prompt-bridges/*_append.md` files into the OMO
-   `superpowers-bridge` preset directory. See the
-   [prompt-bridge install step](./docs/install.md#4-install-prompt-bridges).
-5. Start a fresh OpenCode process before checking the result. Existing processes
-   retain loaded plugin code.
+## Responsibilities and source of truth
 
-There is no junction, alias, second Lite clone, or automatic stock-Superpowers
-fallback. OMO reads only the configured `superpowersSkillsDir`; when it is absent
-or unavailable, the bridge overlay is disabled rather than discovering upstream
-Superpowers.
+| Repository | Role |
+| --- | --- |
+| [Peiyuan-Cai/oh-my-opencode-slim](https://github.com/Peiyuan-Cai/oh-my-opencode-slim) | Runnable, already-patched OMO1 fork, including V2 adapter and local customizations. |
+| [Peiyuan-Cai/superpowers-lite](https://github.com/Peiyuan-Cai/superpowers-lite) | Runnable Lite skills/bootstrap plugin. |
+| This repository | Installer, 32-role configuration, native assets, prompt bridges, tests, historical patch provenance. |
 
-See [`docs/install.md`](./docs/install.md) for the complete sequence and
-[`docs/verify.md`](./docs/verify.md) for readback checks.
+**Only Lite and OMO are runtime plugins. Do not register this kit as a plugin.**
+The OMO fork is the executable source of truth; this kit does not carry a second
+V2 runtime. **Do not apply the historical V1 patches to the fork.** The default
+branches are the normal install path; `feat/opencode-v2-compat` also retains the
+compatibility source.
 
-## What the rollup changes
+## Installed architecture
 
-The v1.1.2 rollup carries the established OMO bridge behavior and the explicit
-`superpowersSkillsDir` configuration field. The separate second patch preserves a
-selected orchestrator variant and model across auto-continue. The verified slim
-target intentionally omits upstream-only divoom, TUI, doctor CLI, and
-task-session-manager surfaces.
+- Three primary orchestrators, eight OMO1 built-in specialists, laborer,
+  sixteen best-of-N variants, and four utilities: **32 roles** in total.
+- Your model is the portable default; existing assignments win. Customize roles
+  afterward to use different models available from your provider.
+- Native agent, base-prompt, best-of-N skill, and prompt-bridge assets.
+- Runtime directories ordered Lite then OMO, with an explicit Lite skills path.
+  No stock Superpowers fallback, second Lite clone, or fourth repository.
 
-The top-level `0001`-`0007` patch files are historical provenance only. Do not
-apply them in addition to the v1.1.2 pair.
+Image tasks need a vision-capable model. Installation does not prove that a
+provider supports a model or every role-specific tool.
 
-## Snapshot
+## Verification and boundaries
 
-`snapshots/oh-my-opencode-slim/v1.1.2/` is a partial comparison aid, not a
-runnable checkout or install artifact. Use an upstream v1.1.2 clone plus the two
-versioned patches for installation.
+```sh
+bun test tests/install-v2.test.ts
+node tests/prompt-bridge-contract.mjs
+cd ../oh-my-opencode-slim
+python3 scripts/verify-v2-host.py ../superpowers-lite --mock-model
+```
 
-## Scope
+The private-host mock exercises tools, continuation preserving **agent plus
+manual model/variant**, native delegation, and two council seats without paid
+model calls. Installer tests use temporary configuration only.
 
-This repository does not manage credentials, auth, session data, or unrelated
-MCP configuration. It also does not install or silently locate upstream
-Superpowers.
+V1 automatic replay/fallback, legacy tmux/zellij/TUI surfaces, and transient
+countdown notifications are not enabled on V2. Some advanced integrations remain
+unverified. See [migration boundaries](docs/opencode-v2-migration.md) and the
+[OMO adapter guide](https://github.com/Peiyuan-Cai/oh-my-opencode-slim/blob/feat/opencode-v2-compat/docs/opencode-v2-omo1.md).
 
-See [`UPSTREAM.md`](./UPSTREAM.md) and
-[`UPSTREAM-LICENSE-oh-my-opencode-slim.txt`](./UPSTREAM-LICENSE-oh-my-opencode-slim.txt)
-for upstream notices.
+## History and attribution
+
+Derived from [BB-84C's patch kit](https://github.com/BB-84C/omo-slim-superpowers-patch-kit).
+OMO derives from [alvinunreal/oh-my-opencode-slim](https://github.com/alvinunreal/oh-my-opencode-slim)
+v1.1.2. Lite retains its authorship and MIT license. See [UPSTREAM.md](UPSTREAM.md)
+and [the upstream license](UPSTREAM-LICENSE-oh-my-opencode-slim.txt).
+
+[README.v1.md](README.v1.md), `patches/`, and `snapshots/` retain V1 installation
+history. Snapshots are partial comparison material, not runnable checkouts or
+the V2 installation route.

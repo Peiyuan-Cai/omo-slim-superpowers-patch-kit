@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // Both checkouts must have the feat/opencode-v2-compat source changes.
+  // Build OMO first. Replace old registrations; do not add duplicates.
+  "plugins": [
+    "<LOCAL_SUPERPOWERS_LITE_PATH>",
+    "<LOCAL_OMO_SLIM_PATH>"
+  ],
+  "agents": {
+    "explore": { "disabled": true },
+    "general": { "disabled": true }
+  }
+}

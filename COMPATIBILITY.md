@@ -1,5 +1,13 @@
 # Compatibility
 
+## OpenCode V2 migration branch
+
+The maintained Peiyuan-Cai forks target OpenCode 2.0.32 while retaining OMO Slim
+1.1.2's architecture and local customizations. Clone the three repositories and
+use [`docs/install-v2.md`](docs/install-v2.md). The OMO fork already contains the
+bridge/V2 changes; do not apply the historical patches below to it. See
+[`docs/opencode-v2-migration.md`](docs/opencode-v2-migration.md) for boundaries.
+
 ## Validated OMO basis
 
 This kit supports `oh-my-opencode-slim v1.1.2` on the OMO 1.x line only. OMO 2.x
