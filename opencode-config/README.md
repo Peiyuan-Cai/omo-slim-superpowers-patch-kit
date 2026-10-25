@@ -28,25 +28,14 @@ Personal OpenCode configuration: plugins, custom agents, skills, prompts.
 └── docs/plans/
 ```
 
-## Best-of-N with Judge
-
-This config installs `best-of-n-with-judge` for parallel candidate generation, blind oracle review, and winner selection on top of the standard Superpowers + OMO Slim flow.
-
-Variant agents:
-
-- `fixer-{alpha,beta,gamma}` — code candidate generators
-- `fixer-delta` — deliberate naive-challenger lane
-- `oracle-{alpha,beta,gamma,delta}` — blind reviewers
-- `designer-{alpha,beta,gamma,delta}` — UI candidate generators
-- `explorer-{alpha,beta}` — parallel reconnaissance
-- `librarian-{alpha,beta}` — parallel docs research
-
-Fast-lane utility agents:
+## Fast-lane utility agents
 
 - `@scout` — narrow file/code lookup
 - `@validator` — format/syntax check
 - `@gist` — 3-line file summarizer
-- `@wildcard` — divergent ideation contributor for brainstorming only
+
+The former best-of-N variant pool (`*-alpha/beta/gamma/delta`) and the
+`best-of-n-with-judge` skill are no longer shipped.
 
 ## Root orchestrators
 
@@ -58,15 +47,11 @@ On V2, the three primary profiles remain, but automatic abort/switch/replay
 fallback is disabled. Native host selection and user-assigned models take
 precedence; the generator installs no private provider names.
 
-Reserved orchestrator-only skills are `best-of-n-with-judge` and `update-memory`. Only `orchestrator`, `orchestrator-beta`, and `orchestrator-delta` may invoke them.
-
-## Worktree convention
-
-Candidates land at `<main-repo>/.worktrees/bestofn-<slug>-<ts>/<variant>/`. Each candidate gets its own branch `bestofn/<slug>-<ts>/<variant>`. Cleanup is unconditional. State persists at `<main-repo>/.opencode/bestofn-state/<task-id>.json` until fan-out completes successfully, then is deleted.
+Reserved orchestrator-only skill is `update-memory`. Only `orchestrator`, `orchestrator-beta`, and `orchestrator-delta` may invoke it.
 
 ## Model assignments
 
-Variant and utility model assignments live centrally in `oh-my-opencode-slim.jsonc` under `presets.superpowers-bridge`. Each entry specifies `model`, optional `variant`, optional `mcps`, and an `orchestratorPrompt` teaching the controller when to dispatch it.
+Utility model assignments live centrally in `oh-my-opencode-slim.jsonc` under `presets.superpowers-bridge`. Each entry specifies `model`, optional `variant`, optional `mcps`, and an `orchestratorPrompt` teaching the controller when to dispatch it.
 
 The markdown files in `agents/` carry OpenCode-native behavioral fields (`permission`, `hidden`, `mode`, `temperature`, `description`, `prompt`). OMO Slim does not manage these fields.
 

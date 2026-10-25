@@ -86,113 +86,8 @@
         "mcps": []
       },
 
-      // ============ Best-of-N variant agents (16) ============
-      // Model + variant + per-variant orchestratorPrompt.
-      // Behavioral contract (permission/hidden/mode) lives in agents/<name>.md.
-      // Superpowers skill policy auto-inherited from base via
-      // superpowers-policy.ts resolveBaseAgentName().
-
-      "fixer-alpha": {
-        "model": "gauge-forge-openai/gpt-5.5",
-        "orchestratorPrompt": "@fixer-alpha\n- Best-of-N variant of @fixer. Model: gpt-5.5 (OpenAI flagship lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "fixer-beta": {
-        "model": [
-          { "id": "gauge-forge-anthropic/claude-opus-4-7", "variant": "high" },
-          { "id": "gauge-forge-openai/gpt-5.4",            "variant": "xhigh" }
-        ],
-        "orchestratorPrompt": "@fixer-beta\n- Best-of-N variant of @fixer. Model: claude-opus-4-7 (Anthropic flagship lane for vendor diversity).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "fixer-gamma": {
-        "model": "gauge-forge-openai/gpt-5.4",
-        "variant": "xhigh",
-        "orchestratorPrompt": "@fixer-gamma\n- Best-of-N variant of @fixer. Model: gpt-5.4 + xhigh reasoning effort (OpenAI deep-analysis lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "fixer-delta": {
-        "model": "gauge-forge-openai/gpt-5.4-mini",
-        "variant": "high",
-        "orchestratorPrompt": "@fixer-delta\n- Best-of-N NAIVE CHALLENGER variant of @fixer. Model: gpt-5.4-mini (deliberate simple-baseline lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration. Surfaces 'maybe the obvious simple thing is right' candidates that stronger variants overthink past."
-      },
-
-      "oracle-alpha": {
-        "model": "gauge-forge-openai/gpt-5.5",
-        "variant": "xhigh",
-        "orchestratorPrompt": "@oracle-alpha\n- Best-of-N variant of @oracle. Model: gpt-5.5 + xhigh reasoning effort.\n- Dispatch ONLY via best-of-n-with-judge skill orchestration. Multi-candidate verdict format applies."
-      },
-      "oracle-beta": {
-        "model": [
-          { "id": "gauge-forge-anthropic/claude-opus-4-7", "variant": "high" },
-          { "id": "gauge-forge-openai/gpt-5.4",            "variant": "xhigh" }
-        ],
-        "orchestratorPrompt": "@oracle-beta\n- Best-of-N variant of @oracle. Model: claude-opus-4-7 + high (Anthropic flagship review lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "oracle-gamma": {
-        "model": "gauge-forge-openai/gpt-5.4",
-        "variant": "xhigh",
-        "orchestratorPrompt": "@oracle-gamma\n- Best-of-N variant of @oracle. Model: gpt-5.4 + xhigh reasoning effort (OpenAI alt-gen deep-analysis lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "oracle-delta": {
-        "model": [
-          { "id": "gauge-forge-anthropic/claude-sonnet-4-6", "variant": "high" },
-          { "id": "gauge-forge-openai/gpt-5.4",            "variant": "medium" }
-        ],
-        "orchestratorPrompt": "@oracle-delta\n- Best-of-N variant of @oracle. Model: claude-sonnet-4-6 + high (Anthropic mid-tier diversity lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-
-      "designer-alpha": {
-        "model": "gauge-forge-openai/gpt-5.5",
-        "orchestratorPrompt": "@designer-alpha\n- Best-of-N variant of @designer. Model: gpt-5.5 (OpenAI flagship lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "designer-beta": {
-        "model": [
-          { "id": "gauge-forge-anthropic/claude-opus-4-7", "variant": "high" },
-          { "id": "gauge-forge-openai/gpt-5.4",            "variant": "xhigh" }
-        ],
-        "orchestratorPrompt": "@designer-beta\n- Best-of-N variant of @designer. Model: claude-opus-4-7 (Anthropic flagship lane).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "designer-gamma": {
-        "model": "gauge-forge-openai/gpt-5.4",
-        "variant": "xhigh",
-        "orchestratorPrompt": "@designer-gamma\n- Best-of-N variant of @designer. Model: gpt-5.4 + xhigh reasoning effort.\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-      "designer-delta": {
-        "model": [
-          { "id": "gauge-forge-anthropic/claude-sonnet-4-6", "variant": "high" },
-          { "id": "gauge-forge-openai/gpt-5.4",            "variant": "medium" }
-        ],
-        "orchestratorPrompt": "@designer-delta\n- Best-of-N variant of @designer. Model: claude-sonnet-4-6 (Anthropic mid-tier).\n- Dispatch ONLY via best-of-n-with-judge skill orchestration."
-      },
-
-      "explorer-alpha": {
-        "model": "gauge-forge-openai/gpt-5.5",
-        "variant": "high",
-        "orchestratorPrompt": "@explorer-alpha\n- Variant of @explorer for best-of-N or ideation fan-out. Model: gpt-5.5 + high (primary recon lane).\n- Dispatch via best-of-n-with-judge ideation sub-mode or fan-out skill orchestration, not directly."
-      },
-      "explorer-beta": {
-        "model": [
-          { "id": "gauge-forge-anthropic/claude-sonnet-4-6", "variant": "high" },
-          { "id": "gauge-forge-openai/gpt-5.4",            "variant": "medium" }
-        ],
-        "orchestratorPrompt": "@explorer-beta\n- Variant of @explorer for best-of-N or ideation fan-out. Model: claude-sonnet-4-6 + high (vendor-diverse recon lane).\n- Dispatch via best-of-n-with-judge ideation sub-mode or fan-out skill orchestration, not directly."
-      },
-
-      "librarian-alpha": {
-        "model": [
-          { "id": "gauge-forge-anthropic/claude-opus-4-7", "variant": "high" },
-          { "id": "gauge-forge-openai/gpt-5.4",            "variant": "xhigh" }
-        ],
-        "mcps": ["websearch", "context7", "grep_app"],
-        "orchestratorPrompt": "@librarian-alpha\n- Variant of @librarian for best-of-N or ideation fan-out. Model: claude-opus-4-7 + high (primary research lane).\n- Dispatch via best-of-n-with-judge ideation sub-mode or fan-out skill orchestration, not directly."
-      },
-      "librarian-beta": {
-        "model": "gauge-forge-openai/gpt-5.5",
-        "variant": "high",
-        "mcps": ["websearch", "context7", "grep_app"],
-        "orchestratorPrompt": "@librarian-beta\n- Variant of @librarian for best-of-N or ideation fan-out. Model: gpt-5.5 + high (vendor-diverse research lane).\n- Dispatch via best-of-n-with-judge ideation sub-mode or fan-out skill orchestration, not directly."
-      },
-
-      // ============ Fast-lane utility agents (4) ============
-      // Latency-optimized narrow-scope agents. NOT in best-of-N pool.
+      // ============ Fast-lane utility agents (3) ============
+      // Latency-optimized narrow-scope utilities; not part of any fan-out pool.
 
       "scout": {
         "model": [
@@ -211,11 +106,6 @@
           { "id": "gauge-forge-openai/gpt-5.4-mini",            "variant": "medium" }
         ],
         "orchestratorPrompt": "@gist\n- Fast file/function summarizer. Model: haiku-4-5.\n- Use for: 'in 3 lines what does this file do', 'what is this function for', quick context retrieval before deep dive.\n- Returns 3-line summary or REQUIRES_DEEPER_AGENT.\n- Don't use for: design analysis, intent reasoning, quality critique. Dispatch @oracle instead."
-      },
-      "wildcard": {
-        "model": "gauge-forge-openai/gpt-5.4-mini",
-        "variant": "high",
-        "orchestratorPrompt": "@wildcard\n- Divergent ideation contributor. Model: gpt-5.4-mini, temperature 1.0.\n- Use ONLY in brainstorming Phase 4 ideation fan-out alongside oracle/librarian/explorer/designer alpha-variants.\n- Proposes naive / contrarian / cross-domain / constraint-flipping ideas that domain experts overthink past.\n- DO NOT use for implementation, recon, or any task outside ideation."
       }
     }
   },

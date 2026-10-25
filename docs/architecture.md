@@ -24,7 +24,7 @@ Key invariants:
 
 - Tier-3 read-only agents deny mutation tools by default.
 - `council` keeps `task` only for councillor dispatch.
-- Reserved skills (`best-of-n-with-judge`, `update-memory`) are allowed only for `orchestrator`, `orchestrator-beta`, and `orchestrator-delta`.
+- Reserved skill `update-memory` is allowed only for `orchestrator`, `orchestrator-beta`, and `orchestrator-delta`.
 - Custom MCPs remain untouched unless you add them to the blacklist.
 
 ## Orchestrator roots
@@ -50,6 +50,8 @@ Full final design: [`docs/specs/2026-05-08-final-orchestrator-pivot-cleanup.md`]
 
 Patch 0007 adds `scripts/clean-dist.ts` and changes `bun run build` to run `clean:dist` first. This prevents stale deleted hook or command artifacts from surviving in `dist/` after rebuild.
 
-## Optional Best-of-N support
+## Custom agent policy inheritance
 
-Patch 0003 adds suffix-stripping policy resolution so variant agents like `fixer-alpha` inherit their base agent policy. The optional `opencode-config/` tree demonstrates 16 variants, 4 utility agents, and the `best-of-n-with-judge` workflow.
+Patch 0003 adds suffix-stripping policy resolution so a user-defined custom
+agent such as `fixer-extra` inherits the base `fixer` policy. The shipped
+preset no longer includes named fan-out variants.

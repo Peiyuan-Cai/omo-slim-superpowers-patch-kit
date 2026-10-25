@@ -1,6 +1,6 @@
 import { afterEach, expect, test } from 'bun:test';
 import {
-  existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync,
+  existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, realpathSync,
   rmSync, statSync, symlinkSync, writeFileSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -10,10 +10,7 @@ const kit = resolve(import.meta.dir, '..');
 const sourceOmo = resolve(kit, '../oh-my-opencode-slim');
 const roots: string[] = [];
 function fixture() {
-  let parent = '/tmp/opencode';
-  try { mkdirSync(parent, { recursive: true }); }
-  catch { parent = mkdtempSync(join(tmpdir(), 'install-v2-parent-')); roots.push(parent); }
-  const root = mkdtempSync(join(parent, 'install-v2-'));
+  const root = mkdtempSync(join(realpathSync(tmpdir()), 'install-v2-'));
   roots.push(root);
   const lite = join(root, 'lite checkout with spaces');
   const omo = join(root, 'omo checkout with spaces');
@@ -60,7 +57,7 @@ function snapshot(root: string): Record<string, string> {
   return result;
 }
 
-test('dry run creates no config directory; apply generates 32 portable roles and ordered plugins', () => {
+test('dry run creates no config directory; apply generates 15 portable roles and ordered plugins', () => {
   const f = fixture();
   const preview = f.run(['--model', 'example/shared']);
   expect(preview.code).toBe(0);
@@ -72,7 +69,7 @@ test('dry run creates no config directory; apply generates 32 portable roles and
   const config = f.json('oh-my-opencode-slim.json');
   expect(config.preset).toBe('superpowers-bridge');
   const roles = config.presets[config.preset];
-  expect(Object.keys(roles)).toHaveLength(32);
+  expect(Object.keys(roles)).toHaveLength(15);
   for (const role of Object.values(roles) as any[]) {
     expect(role.model).toBe('example/shared');
     expect(role.variant).toBeUndefined();
@@ -183,17 +180,14 @@ for (const spec of ['superpowers', 'superpowers@6.1', 'file:///old/superpowers/.
   });
 }
 
-test('copies assets with source prompt expansion, callable bestof variants, preserves conflicts, and is idempotent', () => {
+test('copies utility assets, preserves conflicts, and is idempotent', () => {
   const f = fixture();
-  f.put('skills/best-of-n-with-judge/candidate-prompt-template.md', 'user-owned');
+  f.put('agents/gist.md', '---\nmode: subagent\n---\nUser-owned gist\n');
   expect(f.run(['--model', 'example/shared', '--apply']).code).toBe(0);
-  const agent = readFileSync(join(f.config, 'agents/fixer-alpha.md'), 'utf8');
-  const sourcePrompt = readFileSync(join(kit, 'opencode-config/prompts/fixer-base.md'), 'utf8').trim();
-  expect(agent).toContain(sourcePrompt);
-  expect(agent).not.toContain('prompt: "{file:');
-  expect(agent).toContain('hidden: false');
-  expect(agent).toContain('task: deny');
-  expect(readFileSync(join(f.config, 'skills/best-of-n-with-judge/candidate-prompt-template.md'), 'utf8')).toBe('user-owned');
+  const scout = readFileSync(join(f.config, 'agents/scout.md'), 'utf8');
+  expect(scout).toContain('You are Scout');
+  expect(scout).toContain('mode: subagent');
+  expect(readFileSync(join(f.config, 'agents/gist.md'), 'utf8')).toContain('User-owned gist');
   expect(readFileSync(join(f.config, 'oh-my-opencode-slim/superpowers-bridge/orchestrator_append.md'), 'utf8'))
     .toBe(readFileSync(join(kit, 'prompt-bridges/orchestrator_append.md'), 'utf8'));
   const before = snapshot(f.config);
@@ -204,36 +198,13 @@ test('copies assets with source prompt expansion, callable bestof variants, pres
   expect(snapshot(f.config)).toEqual(before);
 });
 
-test('converts existing supported agents only on apply, backs up exact original outside discovery', () => {
-  const f = fixture();
-  const original = '---\nmode: subagent\nhidden: true\nprompt: "{file:../prompts/fixer-base.md}"\n---\nMy contract\n';
-  f.put('agents/fixer-alpha.md', original);
-  f.put('prompts/fixer-base.md', 'User base prompt');
-  const before = snapshot(f.config);
-  expect(f.run(['--model', 'example/shared']).code).toBe(0);
-  expect(snapshot(f.config)).toEqual(before);
-  expect(f.run(['--model', 'example/shared', '--apply']).code).toBe(0);
-  const converted = readFileSync(join(f.config, 'agents/fixer-alpha.md'), 'utf8');
-  expect(converted).toContain('User base prompt');
-  expect(converted).toContain('My contract');
-  expect(converted).toContain('hidden: false');
-  const backups = snapshot(join(f.config, 'migration-backups'));
-  expect(Object.entries(backups).find(([path]) => path.endsWith('/agents/fixer-alpha.md'))?.[1])
-    .toBe(Buffer.from(original).toString('base64'));
-});
-
-test('missing build and invalid late asset prompt fail before any config writes', () => {
+test('missing build fails before any config writes', () => {
   const f = fixture();
   rmSync(join(f.omo, 'dist/v2/index.js'));
   const missingBuild = f.run(['--model', 'example/shared', '--apply']);
   expect(missingBuild.code).not.toBe(0);
   expect(missingBuild.err).toContain('bun run build');
   expect(existsSync(f.config)).toBe(false);
-  writeFileSync(join(f.omo, 'dist/v2/index.js'), 'export {};');
-  f.put('agents/fixer-alpha.md', '---\nprompt: "{file:../prompts/missing.md}"\n---\nbody');
-  const before = snapshot(f.config);
-  expect(f.run(['--model', 'example/shared', '--apply']).code).not.toBe(0);
-  expect(snapshot(f.config)).toEqual(before);
 });
 
 test('refuses destination symlink escapes without touching outside assets', () => {
