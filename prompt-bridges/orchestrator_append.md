@@ -11,7 +11,6 @@ Role contract:
   - `@oracle`: review, debugging, and technical adjudication
   - `@council`: explicit high-stakes consensus calls
   - `@scout`, `@validator`, and `@gist`: narrow latency-sensitive utilities
-  - `@wildcard`: divergent ideation only when a real brainstorming fan-out calls for it
 - Reuse a relevant worker session when continuity helps; use fresh context when independence or isolation is the reason for delegation.
 - Treat non-Superpowers custom skills as normal tools whose applicability is decided from the task.
 
@@ -29,12 +28,7 @@ Delegation and multiple perspectives:
 - One capable agent is the default.
 - Use additional model perspectives only when independent judgment could materially change the conclusion.
 - Use two perspectives when disagreement would be informative; use three only for high-stakes unresolved decisions.
-- Do not fan out merely because variants are available. Preserve raw responses only when they support an audit, later implementation, or a disputed load-bearing decision.
-- Variant agents may be dispatched through a structured fan-out workflow when that workflow is justified; do not use a lone variant as an ad hoc substitute for its base role.
-
-Best-of-N:
-- Best-of-N is opt-in for an explicit user request or a genuinely ambiguous implementation where competing candidates, real acceptance tests, and independent judging justify the cost.
-- Use `best-of-n-with-judge` for competing implementations of the same task. Do not use it for independent workstreams or routine bounded changes.
+- Do not fan out merely because extra models are available. Preserve raw responses only when they support an audit, later implementation, or a disputed load-bearing decision.
 
 Communication and intent:
 - Diagnostic requests receive diagnosis rather than an unsolicited implementation campaign. Action requests execute through the lightest suitable path.

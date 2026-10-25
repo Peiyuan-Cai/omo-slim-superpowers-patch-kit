@@ -24,6 +24,10 @@ cd ../omo-slim-superpowers-patch-kit
 bun scripts/install-v2.ts --model your-provider/your-model
 # Review the preview before allowing writes:
 bun scripts/install-v2.ts --model your-provider/your-model --apply
+
+# Existing installs that still have the retired best-of-N preset/assets:
+bun scripts/remove-best-of-n.ts
+bun scripts/remove-best-of-n.ts --apply
 ```
 
 The installer defaults to sibling clones. Pass `--lite`, `--omo`, or

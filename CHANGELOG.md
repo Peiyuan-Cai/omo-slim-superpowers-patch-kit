@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- Removed the best-of-N variant pool (16 `*-alpha/beta/gamma/delta` agents),
+  `@wildcard`, and the `best-of-n-with-judge` skill. The shipped preset is now
+  15 roles: 10 base/other agents, 2 orchestrator fallback profiles, and 3
+  fast-lane utilities (`scout`, `validator`, `gist`). Existing installs can use
+  `bun scripts/remove-best-of-n.ts --apply` to back up and remove the retired
+  assets while preserving base-agent model choices.
 - Updated the Lite controller contract so directly matching skills are consulted
   before substantial work without forcing exact step-by-step execution. The
   controller begins with one primary workflow skill and adds another only at a

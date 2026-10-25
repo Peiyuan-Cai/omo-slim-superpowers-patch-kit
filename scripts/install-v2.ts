@@ -204,7 +204,7 @@ async function main() {
   }
   const template = parse(join(kit, 'config-templates/oh-my-opencode-slim.superpowers-bridge.jsonc'));
   const roles = object(template.presets['superpowers-bridge'], 'Shipped role template');
-  if (Object.keys(roles).length !== 32) throw new Error('Expected the 32 shipped local roles.');
+  if (Object.keys(roles).length !== 15) throw new Error('Expected the 15 shipped local roles.');
   for (const name of Object.keys(roles)) {
     if (selected[name] !== undefined) {
       const existing = object(selected[name], `Selected role ${name}`);
