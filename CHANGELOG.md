@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.2.0 - 2026-10-25
 
 - Removed the best-of-N variant pool (16 `*-alpha/beta/gamma/delta` agents),
   `@wildcard`, and the `best-of-n-with-judge` skill. The shipped preset is now
